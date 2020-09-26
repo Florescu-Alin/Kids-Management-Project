@@ -1,6 +1,6 @@
 package core;
 
-import static util.AppUtil.*;
+
 import java.io.*;
 import java.util.*;
 
@@ -83,9 +83,9 @@ public class Kid {
 		
 	}
 	
-	public static Kid enterKidData() {
+	public static Kid enterKidData(Scanner keyboard) {
 		
-		Scanner keyboard = getKeyboard();
+//		Scanner keyboard = getKeyboard();
 		
 		Kid newKid = new Kid();
 		
@@ -101,7 +101,7 @@ public class Kid {
 		newKid.setPhoneNumber(keyboard.nextLine());
 		System.out.println();
 		
-		keyboard.close();
+//		keyboard.close();
 		
 		return newKid;
 	}
@@ -112,9 +112,10 @@ public class Kid {
 		String line = null;
 		
 		while((line = bufferedReader.readLine())!= null) {
-			if(line.contains(this.getCnp())) {
+			if(line.contains(this.getCnp())/*||this.getCnp().lenght()!=14*/) {
+			    
 				return true;
-			}
+			}		
 		}
 	
 		return false;	
@@ -123,9 +124,17 @@ public class Kid {
 	
 	public void registedKid(FileWriter file , FileReader fileRead) throws IOException {
 		
+		
 		if(checkCNP(fileRead)) {
 			System.out.println("There is already a kid with this CNP: "+this.getCnp()+" \nPlease check the CNP!");
-			return;
+		    return;
+		}
+		else {
+			if(this.getCnp().length()!= 14) {
+				System.out.println("You dont have 14 numbers in your CNP.\nPlease check them: "+this.getCnp()
+				+" and insert all the numbers of your CNP!");
+				return;
+			}
 		}
 		
 		String entryLine = this.getCnp() + "," + this.getFirstName() + "," 
@@ -139,6 +148,27 @@ public class Kid {
 		
 		file.close();
 		fileRead.close();
+		
+	}
+	
+	public static void removeKid(FileWriter file , List<Kid> kids, Scanner keyboard) {
+		
+		String cnp = keyboard.nextLine();	 
+		int position = -1 ;
+		
+		
+		for(int i = 0 ; i < kids.size();i++) {
+			if(kids.get(i).getCnp().equals(cnp)) {
+				position = i;
+				break;
+			}
+		}
+		if(position == -1) {
+			System.out.println("The CNP doesnt exist.");
+			return;
+		}
+		kids.remove(position);
+		
 	}
 	
 	public String getCnp() {
